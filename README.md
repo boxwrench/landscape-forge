@@ -155,6 +155,6 @@ cd tests
 npm install
 node run2.mjs .. thornwood,mesa,atoll,emberfall,fjord   # one screenshot per preset
 node run3.mjs ..                                       # interface, walking view, styles, phone width
-node shot.mjs thornwood,fjord ../screenshots           # 1600×900 README screenshots, interface hidden
+node shot.mjs thornwood,fjord ../screenshots           # 1600×900 PNGs with the interface hidden (the README uses JPG copies)
 ```
 The scripts point at Chromium in `/opt/pw-browsers/chromium-1194/chrome-linux/chrome`. `shot.mjs` uses Playwright's Chromium from `~/.cache/ms-playwright`. Change `executablePath` in each script to your own Chrome or Chromium. They serve three.js from `tests/node_modules` instead of the CDN. Software rendering is slow, so expect them to take a few minutes.
