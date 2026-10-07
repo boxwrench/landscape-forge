@@ -18,15 +18,19 @@ await page.goto("http://forge.test/");
 const done = () => page.waitForFunction(() => window.forge?.state.ready && document.getElementById("loader").classList.contains("done"), null, { timeout: 400000, polling: 1000 }).catch(e => { console.log("WAIT FAIL", [...new Set(logs)].join("\n")); throw e; });
 await done();
 await page.keyboard.press("KeyH");
-for (const k of presets) {
-  const t0 = Date.now();
-  await page.evaluate(k => { window.forge.state.ready = false; window.forge.generate(window.forge.PRESETS[k]); }, k);
-  await done();
-  const secs = (Date.now() - t0) / 1000;
-  if (extra) console.log(await page.evaluate(extra));
-  await page.waitForTimeout(3500);
-  await page.screenshot({ path: `${S}/p-${k}.png`, timeout: 120000 });
-  console.log(k, "gen", secs);
-}
+await page.keyboard.press("KeyH");
+await page.evaluate(() => { document.getElementById("panel-body").scrollTop = 9999; });
+await page.waitForTimeout(3000);
+await page.screenshot({ path: `${S}/fx-panel.png`, timeout: 120000 });
+for (const id of ["fx-dof", "fx-dof", "fx-sound", "fx-blur", "fx-blur"]) { await page.click("#" + id); await page.waitForTimeout(600); }
+console.log("state", await page.evaluate(() => JSON.stringify({ fx: window.forge.state.fx, sound: document.getElementById("fx-sound").getAttribute("aria-pressed"), toast: document.getElementById("toast").textContent })));
+await page.keyboard.press("KeyH");
+// spin the camera every frame to see motion blur
+await page.evaluate(() => { const f = window.forge; const spin = () => { f.ctl.yaw += 0.06; requestAnimationFrame(spin); }; requestAnimationFrame(spin); });
+await page.waitForTimeout(9000);
+await page.screenshot({ path: `${S}/fx-blur.png`, timeout: 120000 });
+await page.keyboard.press("KeyM");
+await page.waitForTimeout(800);
+console.log("after M", await page.evaluate(() => document.getElementById("fx-sound").getAttribute("aria-pressed")));
 console.log([...new Set(logs)].slice(0, 20).join("\n"));
 await browser.close();

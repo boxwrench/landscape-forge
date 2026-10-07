@@ -15,7 +15,7 @@ await page.route("**/*", async route => {
   return route.abort();
 });
 await page.goto("http://forge.test/");
-await page.waitForFunction(() => window.forge?.state.ready && document.getElementById("loader").classList.contains("done"), null, { timeout: 300000 });
+await page.waitForFunction(() => window.forge?.state.ready && document.getElementById("loader").classList.contains("done"), null, { timeout: 400000, polling: 1000 }).catch(e => { console.log("WAIT FAIL", [...new Set(logs)].join("\n")); throw e; });
 await page.waitForTimeout(2500);
 await page.screenshot({ path: `${S}/ui-desktop.png`, timeout: 120000 });
 await page.keyboard.press("KeyH");
